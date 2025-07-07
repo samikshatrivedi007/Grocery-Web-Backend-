@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon",
-    "dev:tsc": "tsc && node dist/app.js"
+    "dev:tsc": "tsc && node dist/server.js"
+
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
