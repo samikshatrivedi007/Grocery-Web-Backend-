@@ -23,16 +23,16 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //check user exist
         const exitingUser = yield user_1.default.findOne({ email: email });
         if (exitingUser) {
-            res.status(401).json({ message: "User already exists" });
+            res.status(401).json({ message: "Email already in use. Please login or use a different email." });
             return;
         }
         const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-        const user = yield user_1.default.create({ name, email, password: hashedPassword });
+        const user = yield user_1.default.create({ name, email, password: hashedPassword, role });
         const token = jsonwebtoken_1.default.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
         res.status(201).json({ message: "User registered", token, user });
     }
     catch (err) {
-        res.status(500).json({ message: "registeration failed", error: err.message });
+        res.status(500).json({ message: "registration failed", error: err.message });
     }
 });
 exports.register = register;
@@ -41,12 +41,12 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, password } = req.body;
         const user = yield user_1.default.findOne({ email: email });
         if (!user) {
-            res.status(401).json({ messsage: 'Invalid credentials' });
+            res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
         const ismatch = yield bcryptjs_1.default.compare(password, user.password);
         if (!ismatch) {
-            res.status(401).json({ messsage: 'Invalid credentials' });
+            res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
         const token = jsonwebtoken_1.default.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });

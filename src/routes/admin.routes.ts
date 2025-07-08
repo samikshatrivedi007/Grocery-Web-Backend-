@@ -13,6 +13,7 @@ import  {adminAuth}  from "../middleware/adminAuth";
 
 const router = express.Router();
 
+router.post("/register", registerAdmin);
 // 🔐 Admin Login
 router.post("/login", adminLogin);
 
@@ -23,7 +24,7 @@ router.delete("/products/:id", adminAuth, deleteProduct);
 router.get("/orders", adminAuth, getAllOrders);
 router.get("/stats", adminAuth, getStats);
 router.get("/analytics/top-products", adminAuth, getTopProducts);
-router.post("/register", registerAdmin);
+
 
 
 export default router;

@@ -17,7 +17,6 @@ const admin_model_1 = __importDefault(require("../models/admin.model"));
 const product_model_1 = __importDefault(require("../models/product.model"));
 const order_model_1 = __importDefault(require("../models/order.model"));
 const generateToken_1 = require("../utils/generateToken");
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // ✅ Admin Login
 const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
@@ -41,10 +40,10 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(400).json({ message: "Admin already exists with this email" });
         return;
     }
-    const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
+    //const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = yield admin_model_1.default.create({
         email,
-        password: hashedPassword,
+        password,
     });
     res.status(201).json({
         message: "Admin registered successfully",
@@ -60,8 +59,14 @@ exports.registerAdmin = registerAdmin;
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const admin = res.locals.admin;
     console.log("Admin ID:", admin.id);
-    const product = yield product_model_1.default.create(req.body);
-    res.status(201).json(product);
+    try {
+        const product = yield product_model_1.default.create(req.body);
+        res.status(201).json(product);
+    }
+    catch (error) {
+        console.error("Product creation error:", error.message);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
 });
 exports.addProduct = addProduct;
 // ✅ Update product

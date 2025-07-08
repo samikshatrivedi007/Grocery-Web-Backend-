@@ -20,6 +20,7 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
+
 // ✅ Register Admin
 export const registerAdmin = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
@@ -30,11 +31,11 @@ export const registerAdmin = async (req: Request, res: Response): Promise<void> 
         return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    //const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = await Admin.create({
         email,
-        password: hashedPassword,
+        password,
     });
 
     res.status(201).json({
@@ -52,8 +53,13 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
     const admin = res.locals.admin;
     console.log("Admin ID:", admin.id);
 
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
+    try {
+        const product = await Product.create(req.body);
+        res.status(201).json(product);
+    } catch (error: any) {
+        console.error("Product creation error:", error.message);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
 };
 
 // ✅ Update product

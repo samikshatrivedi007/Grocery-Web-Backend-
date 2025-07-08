@@ -10,16 +10,16 @@ export const register =async(req:Request, res:Response):Promise<void> => {
         //check user exist
         const exitingUser = await User.findOne({email: email});
         if (exitingUser) {
-            res.status(401).json({message: "User already exists"});
+            res.status(401).json({message: "Email already in use. Please login or use a different email."});
             return;
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({name, email, password: hashedPassword});
+        const user = await User.create({name, email, password: hashedPassword,role});
         const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '7d'});
         res.status(201).json({message: "User registered", token, user});
 
     } catch (err:any) {
-        res.status(500).json({message: "registeration failed", error: err.message});
+        res.status(500).json({message: "registration failed", error: err.message});
     }
 };
 export const login = async (req: Request, res: Response):Promise<void> => {
@@ -27,12 +27,12 @@ export const login = async (req: Request, res: Response):Promise<void> => {
         const {email, password} = req.body;
         const user = await User.findOne({email: email});
         if (!user) {
-            res.status(401).json({messsage: 'Invalid credentials'});
+            res.status(401).json({message: 'Invalid credentials'});
             return;
         }
         const ismatch = await bcrypt.compare(password, user.password);
         if (!ismatch) {
-            res.status(401).json({messsage: 'Invalid credentials'})
+            res.status(401).json({message: 'Invalid credentials'})
             return;
         }
 

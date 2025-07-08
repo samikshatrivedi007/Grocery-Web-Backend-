@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const adminController_1 = require("../controllers/adminController");
 const adminAuth_1 = require("../middleware/adminAuth");
 const router = express_1.default.Router();
+router.post("/register", adminController_1.registerAdmin);
 // 🔐 Admin Login
 router.post("/login", adminController_1.adminLogin);
 // 🛡️ Protected Admin Routes
@@ -16,5 +17,4 @@ router.delete("/products/:id", adminAuth_1.adminAuth, adminController_1.deletePr
 router.get("/orders", adminAuth_1.adminAuth, adminController_1.getAllOrders);
 router.get("/stats", adminAuth_1.adminAuth, adminController_1.getStats);
 router.get("/analytics/top-products", adminAuth_1.adminAuth, adminController_1.getTopProducts);
-router.post("/register", adminController_1.registerAdmin);
 exports.default = router;
